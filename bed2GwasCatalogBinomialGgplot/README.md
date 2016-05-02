@@ -4,6 +4,8 @@ The P-values will be computed using binomial cumulative distribution function b(
 
 This script will connect to GWAS Catalog and download the entire data set, create GWAS Catalog bed file, and parse and uniq according to the N-1 input arguments. Argument provided to the bash script **runcategories.sh** should be a bed file that will be used to intersect parsed bed files from the GWAS Catalog. Script **runcategories.sh** contains the names of tested GWAS categories, modify it if you want different ones. Script **runcategories.sh** will then call **bed2GwasCatalogBinomialGgplot.sh**. Number of overlaps is reported and initial number of entries in parsed files. Finally, **bed2GwasCatalogBinomialGgplot.sh** will create an R script that will be executed to calculate binomial p-values for each overlap. Intermediary files will be removed, except: GwasCatalog.bed (entire catalog in a bed file), \*gwascatalog.bed (parsed original files from GWAS Catalog), \*gwascatalog.bed.cut.sort.uniq.chrXY (parsed and uniqed files from GWAS Catalog), \*gwascatalog.bed.cut.sort.uniq.overlap (overlap with parsed files), GwasCatalog2Bed.sh (sciprt to download GWAS Catalog and convert to bed). Note that names of phenotypes in GWAS Catalog start with capital letter but then next word is with small letter. **That is why we enabled case insensitive search in this script.**
 
+The output file is a **publication ready pdf** that is made in **ggplot2** using the **wesanderson color palette** in R.
+
 #Usage
 <pre>
 chmod 775 runcategories.sh 
