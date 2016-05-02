@@ -74,7 +74,7 @@ chmod 775 main.sh
 
 #removing files
 rm gwascatalog.txt
-#rm main.sh
+rm main.sh
 
 for last; do true; done
 echo $last
