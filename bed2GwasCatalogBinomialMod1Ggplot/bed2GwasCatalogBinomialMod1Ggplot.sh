@@ -74,7 +74,7 @@ chmod 775 main.sh
 
 #removing files
 rm gwascatalog.txt
-rm main.sh
+#rm main.sh
 
 for last; do true; done
 echo $last
@@ -108,6 +108,7 @@ echo Human Genome size version hg19: $hg19
 #bedtools merge on input bed
 sort -k1,1V -k2,2n $last > tmp
 bedtools merge -n -i tmp > $last
+wc -l $last
 rm tmp
  
 #calculate coverage
@@ -127,12 +128,12 @@ done
 #create  R script
 touch script.R
 echo "#!/usr/bin/Rscript" > script.R
-echo "existingDF <- as.data.frame(matrix(seq(3),nrow=1,ncol=3))" >>script.R
+echo "existingDF <- as.data.frame(matrix(seq(4),nrow=1,ncol=4))" >>script.R
 #calculate coverage and fraction per category, load into R script
 i=1
 for var in "${@:1:$#-1}"
 do
-i++
+let i=i+1
 #removing input spaces and '
 var2a=$(echo $var | tr -d ' ')
 var2=${var2a//[^[:alnum:]]/}
@@ -160,8 +161,8 @@ fold="$(awk 'BEGIN {print (100*"'"$overlap"'"/"'"$total"'")}')"
 echo  "x<-dbinom ($(wc -l "$var".gwascatalog.bed.cut.sort.uniq.overlap | cut -f1 -d ' '), $(wc -l "$var".gwascatalog.bed | cut -f1 -d ' '), "$fra")" >> script.R
 echo "y<-"$fold"">> script.R
 echo "name<-\""$var2"\"">>script.R
-echo "z<-c(name,x,y)">>script.R
-
+echo "s<-$(wc -l "$var".gwascatalog.bed | cut -f1 -d ' ')">>script.R
+echo "z<-c(name,x,y,s)">>script.R
 echo "existingDF <- rbind(existingDF,z)">>script.R
 echo "existingDF">>script.R
 done
@@ -169,7 +170,7 @@ done
 #finishing R script
 
 echo "existingDF<-existingDF[-1,]">>script.R
-echo "existingDF[,2:3]<-sapply(existingDF[,2:3], as.numeric)">>script.R
+echo "existingDF[,2:4]<-sapply(existingDF[,2:4], as.numeric)">>script.R
 echo "sapply(existingDF, mode)">>script.R
 echo "existingDF">>script.R
 echo "existingDF<-transform(existingDF, V2=-log(V2))" >> script.R
@@ -178,20 +179,55 @@ echo "existingDF">>script.R
 echo "data<-existingDF" >>script.R
 echo "data">>script.R
 echo "rownames(data) <- data\$V1" >>script.R
-echo "data<-data[,2:3]">>script.R
+echo "data<-data[,2:4]">>script.R
+
+#adding categories
+echo "k<-dim (data)" >>script.R
+echo "rep <-rep(\"Other\", k[1])">>script.R
+echo "data\$V5 <- rep">>script.R
+echo "data[rownames(data) == \"Schizophrenia\",]\$V5<-\"Brain\"">>script.R
+echo "data[rownames(data) == \"Bipolardisorder\",]\$V5<-\"Brain\"">>script.R
+echo "data[rownames(data) == \"Rheumatoidarthritis\",]\$V5<-\"Chronic Inflammatory\"">>script.R
+echo "data[rownames(data) == \"Ulcerativecolitis\",]\$V5<-\"Chronic Inflammatory\"">>script.R
+echo "data[rownames(data) == \"Crohnsdisease\",]\$V5<-\"Chronic Inflammatory\"">>script.R
+echo "data[rownames(data) == \"CardiogramplusC4D\",]\$V5<-\"Cardiovascular\"">>script.R
+echo "data[rownames(data) == \"CoronaryHeart\",]\$V5<-\"Cardiovascular\"">>script.R
+echo "data[rownames(data) == \"Myocardialinfarction\",]\$V5<-\"Cardiovascular\"">>script.R
+echo "data[rownames(data) == \"Multiplesclerosis\",]\$V5<-\"Brain\"">>script.R
+echo "data[rownames(data) == \"Parkinsonsdisease\",]\$V5<-\"Brain\"">>script.R
+echo "data[rownames(data) == \"Alzheimersdisease\",]\$V5<-\"Brain\"">>script.R
+echo "data[rownames(data) == \"Lupus\",]\$V5<-\"Chronic Inflammatory\"">>script.R
+echo "data[rownames(data) == \"Prostatecancer\",]\$V5<-\"Cancer\"">>script.R
+echo "data[rownames(data) == \"Pancreaticcancer\",]\$V5<-\"Cancer\"">>script.R
+echo "data[rownames(data) == \"Breastcancer\",]\$V5<-\"Cancer\"">>script.R
+echo "data[rownames(data) == \"CoronaryArtery\",]\$V5<-\"Cardiovascular\"">>script.R
+echo "data[rownames(data) == \"Coronaryarterycalcification\",]\$V5<-\"Cardiovascular\"">>script.R
+echo "data">>script.R
+
+#removing 0s
+echo "data[, 1:3] <- sapply(data[,1:3], as.numeric)">>script.R
+echo "row_sub = apply(data[,1:3], 1, function(y) all(y != 0))">>script.R
+echo "row_sub">>script.R
+echo "data<-data[row_sub,]">>script.R
+echo "data">>script.R
+echo "data[, 1:3] <- sapply(data[,1:3], as.numeric)">>script.R
+echo "colnames(data)<-c(\"LogP\", \"FC\", \"Phenotype SNPs\", \"Category\")">>script.R
+echo "data">>script.R
 
 #making ggplot2 graph
 echo "library(ggplot2)" >> script.R
 echo "library(wesanderson)">>script.R
 echo "library(directlabels)">>script.R
-echo "ymax<-max(data\$V2,na.rm = TRUE)">>script.R
-echo "ymin<-min(data\$V2,na.rm = TRUE)">>script.R
-echo "xmax<-max(data\$V3,na.rm = TRUE)">>script.R
-echo "xmin<-min(data\$V3,na.rm = TRUE)">>script.R
-echo "p<- ggplot(data, aes(x=data\$V3, y=data\$V2)) + geom_point(shape=19, alpha=1/8, color=\"red\", size=8) + xlab(\"Fold change\") + ylab(\"-log P-value\") + ggtitle (\"GWAS SNPs enrichment - binomial test\") + geom_dl(aes(label=row.names(data)), method=list(\"first.bumpup\"), col=\"blue\", alpha=1/2)+ylim(ymin, ymax) +xlim(xmin, xmax)" >>script.R
-echo "pdf(\"output.pdf\",width=8, height=8)">>script.R
-echo "print(p)">> script.R
+echo "ymax<-max(data\$LogP,na.rm = TRUE)">>script.R
+echo "ymin<-min(data\$LogP,na.rm = TRUE)">>script.R
+echo "xmax<-max(data\$FC,na.rm = TRUE)">>script.R
+echo "xmin<-min(data\$FC,na.rm = TRUE)">>script.R
+
+echo "p<- ggplot(data, aes(x=data\$FC, y=data\$LogP,label=row.names(data))) + geom_point(shape=19, alpha=1/8, color=\"red\", aes(size=data\$\"Phenotype SNPs\"), max_size=max(data\$\"Phenotype SNPs\")) + xlab(\"Fold change\") + ylab(\"-log P-value\") + ggtitle (\"GWAS SNPs enrichment - binomial test\") + geom_dl(aes(label=row.names(data)), method=list(\"first.bumpup\"), col=\"blue\", alpha=1/2)+ylim(ymin, ymax) +xlim(xmin-3, xmax)" >>script.R
+echo "pdf(\"output.pdf\",width=10, height=8)">>script.R
+echo "print(p+ geom_dl(aes(colour = data\$\"Category\"), method=list(\"first.bumpup\")) + scale_colour_hue(name=\"Category\") + labs(size=\"Phenotype SNPs\", color=\"Category\") + scale_size(range = c(0,50)) + theme(axis.text=element_text(size=16), axis.title=element_text(size=18,face=\"bold\")) + scale_color_manual(values = c(wes_palette(\"Cavalcanti\"), wes_palette(\"Royal1\"), wes_palette(\"GrandBudapest\"), wes_palette(\"Royal2\"), wes_palette(\"Darjeeling\"), wes_palette(\"Zissou\")))) ">> script.R
 echo "dev.off()">>script.R
+
 
 chmod 775 script.R
 ./script.R
