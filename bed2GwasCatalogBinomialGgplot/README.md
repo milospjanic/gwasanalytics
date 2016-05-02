@@ -6,8 +6,8 @@ This script will connect to GWAS Catalog and download the entire data set, creat
 
 #Usage
 <pre>
-chmod 775 ./bed2GwasCatalogBinomial.sh
-./bed2GwasCatalogBinomial "Coronary artery" "Coronary heart" "Bipolar disorder" "Feminism" L2_TCCTGAGC_L002_peaks.bed 
+chmod 775 runcategories.sh 
+./runcategories2.sh GSE47753_GM12878_ATACseq_50k_AllReps_ZINBA_pp08.bed
 </pre>
 
 #Dependencies 
@@ -15,8 +15,9 @@ Rscript, bedtools (needs to be in $PATH)
 
 #Output
 <pre>
-chmod 775 runcategories2.sh 
-mpjanic@zoran:~/binomial_test$ ./runcategories2.sh GSE47753_GM12878_ATACseq_50k_AllReps_ZINBA_pp08.bed
+chmod 775 runcategories.sh 
+./runcategories2.sh GSE47753_GM12878_ATACseq_50k_AllReps_ZINBA_pp08.bed
+
 GSE47753_GM12878_ATACseq_50k_AllReps_ZINBA_pp08.bed
 --2016-05-02 01:55:43--  http://www.genome.gov/admin/gwascatalog.txt
 Resolving www.genome.gov (www.genome.gov)... 156.40.242.24
