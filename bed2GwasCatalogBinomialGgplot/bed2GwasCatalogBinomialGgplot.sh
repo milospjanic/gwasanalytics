@@ -232,3 +232,8 @@ chmod 775 script.R
 ./script.R
 rm script.R
 
+rm *bed.cut.sort.uniq.overlap.input.int
+rm *bed.cut.sort.uniq.overlap.input.int.cut
+rm *bed.cut.sort.uniq.overlap
+rm *bed.cut.sort.uniq.chrXY
+rm *.gwascatalog.bed
