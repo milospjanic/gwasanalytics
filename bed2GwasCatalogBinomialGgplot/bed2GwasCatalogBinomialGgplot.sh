@@ -2,13 +2,16 @@
 #download gwas catalog and create bed file with "chr position position+1 proxy_gene phenotype"
 echo "
 #download gwas catalog 
-wget http://www.genome.gov/admin/gwascatalog.txt
-awk -F\"\t\" '{if (\$12!=\"\") print \$12\"\t\"\$13\"\t\"\$15\"\t\"\$8}' gwascatalog.txt > tmp
-awk -F\"\t\" '{print \$1\"\t\"\$2\"\t\"\$2+1\"\t\"\$3\"\t\"\$4}' tmp > GwasCatalog.bed
-rm tmp" > GwasCatalog2Bed.sh
-chmod 775 GwasCatalog2Bed.sh
-./GwasCatalog2Bed.sh
 
+wget https://www.dropbox.com/s/43d9vh10k44jqbu/full.mod.crossmap.plus.snpsnpinteract
+
+#awk -F\"\t\" '{if (\$12!=\"\") print \$12\"\t\"\$13\"\t\"\$15\"\t\"\$8}' gwascatalog.txt > tmp
+#awk -F\"\t\" '{print \$1\"\t\"\$2\"\t\"\$2+1\"\t\"\$3\"\t\"\$4}' tmp > GwasCatalog.bed
+#rm tmp" > GwasCatalog2Bed.sh
+#chmod 775 GwasCatalog2Bed.sh
+#./GwasCatalog2Bed.sh
+
+cp full.mod.crossmap.plus.snpsnpinteract GwasCatalog.bed
 #adding CardiogramPlusC4D to GWASCatalog
 awk -F"\t" '{print $1"\t"$2"\t"$3"\t"$4"\t","CardiogramPlusC4D"}' CARDIOGRAMplusC4DleadSNPs.bed  > CARDIOGRAMC4Dplusnovel.txt.tmp
 sed -i 's/^chr//g' CARDIOGRAMC4Dplusnovel.txt.tmp
