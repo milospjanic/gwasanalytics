@@ -71,7 +71,7 @@ do
   echo Converting Phenotype: \$var
 sed -i 's/^23/X/g' \"\$var\".gwascatalog.bed.cut.sort.uniq
 sed -i 's/^24/Y/g' \"\$var\".gwascatalog.bed.cut.sort.uniq
-#sed  's/^/chr/g' \"\$var\".gwascatalog.bed.cut.sort.uniq >  \"\$var\".gwascatalog.bed.cut.sort.uniq.chrXY
+cp \"\$var\".gwascatalog.bed.cut.sort.uniq  \"\$var\".gwascatalog.bed.cut.sort.uniq.chrXY
 rm \"\$var\".gwascatalog.bed.cut.sort.uniq
 done
 
