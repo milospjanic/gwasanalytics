@@ -246,3 +246,6 @@ rm *bed.cut.sort.uniq.overlap.input.int.cut
 rm *bed.cut.sort.uniq.overlap
 rm *bed.cut.sort.uniq.chrXY
 rm *.gwascatalog.bed
+rm GwasCatalog.bed
+rm CARDIOGRAMplusC4DleadSNPs.bed
+rm hg19.chrom.sizes
