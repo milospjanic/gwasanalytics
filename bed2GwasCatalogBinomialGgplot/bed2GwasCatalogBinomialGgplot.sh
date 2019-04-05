@@ -1,9 +1,10 @@
 #!/bin/bash
 #download gwas catalog and create bed file with "chr position position+1 proxy_gene phenotype"
-echo "
-#download gwas catalog 
 
+#download gwas catalog 
 wget https://www.dropbox.com/s/43d9vh10k44jqbu/full.mod.crossmap.plus.snpsnpinteract
+
+#echo "
 
 #awk -F\"\t\" '{if (\$12!=\"\") print \$12\"\t\"\$13\"\t\"\$15\"\t\"\$8}' gwascatalog.txt > tmp
 #awk -F\"\t\" '{print \$1\"\t\"\$2\"\t\"\$2+1\"\t\"\$3\"\t\"\$4}' tmp > GwasCatalog.bed
