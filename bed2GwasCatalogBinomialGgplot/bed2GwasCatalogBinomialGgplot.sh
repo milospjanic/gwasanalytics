@@ -20,7 +20,7 @@ wget https://stanfordmedicine.box.com/shared/static/pqxkuzwgv8bhl8ne05a3ohlmzgwb
 mv pqxkuzwgv8bhl8ne05a3ohlmzgwbir28.bed CARDIOGRAMplusC4DleadSNPs.bed
 
 awk -F"\t" '{print $1"\t"$2"\t"$3"\t"$4"\t","CardiogramPlusC4D"}' CARDIOGRAMplusC4DleadSNPs.bed  > CARDIOGRAMC4Dplusnovel.txt.tmp
-sed -i 's/^chr//g' CARDIOGRAMC4Dplusnovel.txt.tmp
+#sed -i 's/^chr//g' CARDIOGRAMC4Dplusnovel.txt.tmp
 cat CARDIOGRAMC4Dplusnovel.txt.tmp >> GwasCatalog.bed
 rm CARDIOGRAMC4Dplusnovel.txt.tmp
 
@@ -233,7 +233,7 @@ echo "xmin<-min(data\$FC,na.rm = TRUE)">>script.R
 
 echo "p<- ggplot(data, aes(x=data\$FC, y=data\$LogP,label=row.names(data))) + geom_point(shape=19, alpha=1/8, color=\"red\", aes(size=data\$\"Phenotype SNPs\"), max_size=max(data\$\"Phenotype SNPs\")) + xlab(\"Fold change\") + ylab(\"-log P-value\") + ggtitle (\"GWAS SNPs enrichment - binomial test\") + geom_dl(aes(label=row.names(data)), method=list(\"first.bumpup\"), col=\"blue\", alpha=1/2)+ylim(ymin, ymax) +xlim(xmin-3, xmax)" >>script.R
 echo "pdf(\"output.pdf\",width=10, height=8)">>script.R
-echo "print(p+ geom_dl(aes(colour = data\$\"Category\"), method=list(\"first.bumpup\")) + scale_colour_hue(name=\"Category\") + labs(size=\"Phenotype SNPs\", color=\"Category\") + scale_size(range = c(0,50)) + theme(axis.text=element_text(size=16), axis.title=element_text(size=18,face=\"bold\")) + scale_color_manual(values = c(wes_palette(\"Cavalcanti\"), wes_palette(\"Royal1\"), wes_palette(\"GrandBudapest\"), wes_palette(\"Royal2\"), wes_palette(\"Darjeeling\"), wes_palette(\"Zissou\")))) ">> script.R
+echo "print(p+ geom_dl(aes(colour = data\$\"Category\"), method=list(\"first.bumpup\")) + scale_colour_hue(name=\"Category\") + labs(size=\"Phenotype SNPs\", color=\"Category\") + scale_size(range = c(0,50)) + theme(axis.text=element_text(size=16), axis.title=element_text(size=18,face=\"bold\")) + scale_color_manual(values = c(wes_palette(\"Cavalcanti1\"), wes_palette(\"Royal1\"), wes_palette(\"GrandBudapest1\"), wes_palette(\"Royal2\"), wes_palette(\"Darjeeling1\"), wes_palette(\"Zissou1\")))) ">> script.R
 echo "dev.off()">>script.R
 
 
