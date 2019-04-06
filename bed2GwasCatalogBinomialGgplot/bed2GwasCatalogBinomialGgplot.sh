@@ -96,6 +96,8 @@ for var in "${@:1:$#-1}"
 do
   echo Overlapping Phenotype SNPs with input bed: $var
 bedtools intersect -a "$var".gwascatalog.bed.cut.sort.uniq.chrXY -b $last > "$var".gwascatalog.bed.cut.sort.uniq.overlap
+sort -k1,1V -k2,2n "$var".gwascatalog.bed.cut.sort.uniq.overlap | uniq> "$var".gwascatalog.bed.cut.sort.uniq.overlap.sortuniq
+cp "$var".gwascatalog.bed.cut.sort.uniq.overlap.sortuniq "$var".gwascatalog.bed.cut.sort.uniq.overlap
 done
 
 for var in "${@:1:$#-1}"
